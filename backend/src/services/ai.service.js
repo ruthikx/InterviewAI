@@ -2,7 +2,7 @@ const { GoogleGenAI } = require("@google/genai")
 const Groq = require("groq-sdk")
 const { z } = require("zod")
 const { zodToJsonSchema } = require("zod-to-json-schema")
-const puppeteer = require("puppeteer")
+const htmlPdfNode = require('html-pdf-node')
 
 const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_GENAI_API_KEY })
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
@@ -466,24 +466,10 @@ Job Description:
 ${jobDescription}`
 }
 
-const path = require('path')
-
 async function generatePdfFromHtml(htmlContent) {
-    const browser = await puppeteer.launch({
-        headless: "new",
-        executablePath: '/opt/render/.cache/puppeteer/chrome/linux-148.0.7778.97/chrome-linux64/chrome',
-        args: [
-            "--no-sandbox",
-            "--disable-setuid-sandbox",
-            "--disable-dev-shm-usage",
-            "--disable-gpu"
-        ]
-    })
-    const page = await browser.newPage()
-    await page.setContent(htmlContent, { waitUntil: "networkidle0", timeout: 10000 })
-    const pdfUint8Array = await page.pdf({ format: "A4" })
-    const pdfBuffer = Buffer.from(pdfUint8Array)
-    await browser.close()
+    const file = { content: htmlContent }
+    const options = { format: 'A4' }
+    const pdfBuffer = await htmlPdfNode.generatePdf(file, options)
     return pdfBuffer
 }
 
