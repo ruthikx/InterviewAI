@@ -468,12 +468,20 @@ ${jobDescription}`
 const https = require('https')
 
 async function generatePdfFromHtml(htmlContent) {
-    const encodedHtml = encodeURIComponent(htmlContent)
-    
-    const response = await fetch(`https://api.html2pdf.app/v1/generate?html=${encodedHtml}&apiKey=your_key`)
-    
-    if (!response.ok) throw new Error('PDF generation failed')
-    
+    const response = await fetch('https://api.html2pdf.app/v1/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            html: htmlContent,
+            apiKey: process.env.HTML2PDF_API_KEY
+        })
+    })
+
+    if (!response.ok) {
+        const error = await response.text()
+        throw new Error(`PDF generation failed: ${error}`)
+    }
+
     const arrayBuffer = await response.arrayBuffer()
     return Buffer.from(arrayBuffer)
 }
