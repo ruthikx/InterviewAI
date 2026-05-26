@@ -1,0 +1,587 @@
+// ── Variables ────────────────────────────────────────────────────────────────
+$bg-page:        #0d1117;
+$bg-card:        #161b22;
+$bg-panel:       #1c2230;
+$bg-input:       #1e2535;
+$border-color:   #2a3348;
+$text-primary:   #e6edf3;
+$text-muted:     #7d8590;
+$accent:         #e86a00;
+$accent-alt:     #ff8c42;
+$badge-required: #e86a00;
+$badge-best:     #e86a00;
+$info-bg:        #1b2a4a;
+$info-border:    #2d4a7a;
+$font-stack:     system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+// ── Page Shell ───────────────────────────────────────────────────────────────
+.home-page {
+    width: 100%;
+    min-height: 100vh;
+    background-color: $bg-page;
+    color: $text-primary;
+    font-family: $font-stack;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 1.5rem;
+    gap: 2rem;
+    position: relative;
+    overflow: hidden;
+
+    > *:not(.sparkles) {
+        position: relative;
+        z-index: 1;
+    }
+}
+
+.loading-screen{
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    color: white;
+}
+
+.loading-animation{
+    width: 320px;
+    height: 320px;
+}
+
+.home-topbar {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    padding-inline: 0.25rem;
+}
+
+.logout-btn {
+    padding: 0.65rem 1rem;
+    border: 1px solid rgba($accent, 0.45);
+    border-radius: 999px;
+    background-color: rgba($accent, 0.08);
+    color: $text-primary;
+    font-family: $font-stack;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s, transform 0.1s;
+
+    &:hover {
+        background-color: rgba($accent, 0.16);
+        border-color: $accent;
+    }
+
+    &:active {
+        transform: scale(0.98);
+    }
+}
+
+
+// ── Page Header ──────────────────────────────────────────────────────────────
+.page-header {
+    text-align: center;
+    width: 100%;
+    max-width: 900px;
+
+    h1 {
+        font-size: 2.25rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: $text-primary;
+    }
+
+    p {
+        color: $text-muted;
+        font-size: 0.95rem;
+        max-width: 680px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    .highlight {
+        color: $accent;
+    }
+}
+
+// ── Main Card ─────────────────────────────────────────────────────────────────
+.interview-card {
+    width: 100%;
+    max-width: 900px;
+    background-color: $bg-card;
+    border: 1px solid $border-color;
+    border-radius: 0.5rem;
+    overflow: hidden;
+
+    &__body {
+        display: flex;
+        min-height: 520px;
+        align-items: stretch;
+    }
+
+    &__footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 1.5rem;
+        border-top: 1px solid $border-color;
+
+        .footer-info {
+            font-size: 0.8rem;
+            color: $text-muted;
+        }
+    }
+}
+
+.sparkles{
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    .sparkles::before,
+    .sparkles::after{
+        content: "";
+        position: absolute;
+        width: 200%;
+        height: 200%;
+
+        background-image:
+            radial-gradient(rgba(255,255,255,0.8) 1px, transparent 1px),
+            radial-gradient(rgba(255,140,0,0.8) 1px, transparent 1px);
+
+        background-size:
+            80px 80px,
+            120px 120px;
+
+        background-position:
+            0 0,
+            40px 60px;
+
+        animation: sparkleMove 12s linear infinite;
+
+        opacity: 0.35;
+    }
+
+    .sparkles::after{
+        animation-duration: 18s;
+        opacity: 0.2;
+    }
+
+    @keyframes sparkleMove{
+        from{
+            transform: translateY(0);
+        }
+
+        to{
+            transform: translateY(-100px);
+        }
+    }
+
+// ── Panels ────────────────────────────────────────────────────────────────────
+.panel-divider {
+    width: 1px;
+    background-color: $border-color;
+    flex-shrink: 0;
+}
+
+.panel__textarea{
+    &::-webkit-scrollbar{
+        display: none;
+    }
+}
+
+.panel {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem;
+
+    &__header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.25rem;
+
+        h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: $text-primary;
+            flex: 1;
+        }
+    }
+
+    &__icon {
+        display: flex;
+        align-items: center;
+        color: $accent;
+    }
+
+    &__textarea {
+        flex: 1;
+        width: 100%;
+        background-color: $bg-input;
+        border: 1px solid $border-color;
+        border-radius: 0.5rem;
+        padding: 0.75rem 1rem;
+        color: $text-primary;
+        font-family: $font-stack;
+        font-size: 0.875rem;
+        resize: none;
+        outline: none;
+        transition: border-color 0.2s;
+        line-height: 1.5;
+
+        &::placeholder {
+            color: $text-muted;
+        }
+
+        &:focus {
+            border-color: $accent;
+        }
+
+        &--short {
+            flex: unset;
+            height: 96px;
+        }
+    }
+
+    &--left {
+        position: relative;
+
+        .char-counter {
+            position: absolute;
+            bottom: 2.25rem;
+            right: 2rem;
+            font-size: 0.75rem;
+            color: $text-muted;
+        }
+    }
+
+    &--right {
+        gap: 0.75rem;
+    }
+}
+
+// ── Badges ────────────────────────────────────────────────────────────────────
+.badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 0.3rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+
+    &--required {
+        background-color: rgba($badge-required, 0.15);
+        color: $badge-required;
+        border: 1px solid rgba($badge-required, 0.3);
+    }
+
+    &--best {
+        background-color: rgba($badge-best, 0.15);
+        color: $badge-best;
+        border: 1px solid rgba($badge-best, 0.3);
+    }
+}
+
+// ── Section Label ─────────────────────────────────────────────────────────────
+.section-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: $text-primary;
+    margin-bottom: 0.25rem;
+}
+
+// ── Dropzone ──────────────────────────────────────────────────────────────────
+.upload-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 1.5rem 1rem;
+    background-color: $bg-input;
+    border: 2px dashed $border-color;
+    border-radius: 0.6rem;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s;
+    text-align: center;
+
+    &:hover {
+        border-color: $accent;
+        background-color: rgba($accent, 0.05);
+    }
+
+    &__icon {
+        color: $accent;
+        margin-bottom: 0.25rem;
+    }
+
+    &__title {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: $text-primary;
+        margin: 0;
+    }
+
+    &__subtitle {
+        font-size: 0.75rem;
+        color: $text-muted;
+        margin: 0;
+    }
+}
+
+// ── OR Divider ────────────────────────────────────────────────────────────────
+.or-divider {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: $text-muted;
+    font-size: 0.75rem;
+
+    &::before,
+    &::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background-color: $border-color;
+    }
+
+    span {
+        white-space: nowrap;
+    }
+}
+
+// ── Self Description ──────────────────────────────────────────────────────────
+.self-description {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+// ── Info Box ──────────────────────────────────────────────────────────────────
+.info-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.75rem 1rem;
+    background-color: $info-bg;
+    border: 1px solid $info-border;
+    border-radius: 0.5rem;
+
+    &__icon {
+        flex-shrink: 0;
+        color: #4a90e2;
+        margin-top: 1px;
+    }
+
+    p {
+        margin: 0;
+        font-size: 0.8rem;
+        color: #8ab4f8;
+        line-height: 1.5;
+
+        strong {
+            color: $text-primary;
+        }
+    }
+}
+
+// ── Generate Button ───────────────────────────────────────────────────────────
+.generate-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, $accent 0%, darken($accent, 10%) 100%);
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    font-family: $font-stack;
+
+    &:hover {
+        opacity: 0.9;
+    }
+
+    &:active {
+        transform: scale(0.98);
+    }
+}
+
+.previous-reports{
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 900px;
+
+    .reports-list{
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+
+        .report-item{
+            background-color: $bg-card;
+            border: 1px solid $border-color;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            flex: 1 1 260px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            cursor: pointer;
+            min-width: 0;
+
+            .report-timestamp {
+                font-size: 0.75rem;
+                color: $text-muted;
+            }
+
+            .match-score {
+                font-size: 0.8rem;
+                font-weight: 600;
+                color: $accent;
+                align-items: flex-start;
+            }
+        }
+    }
+}
+
+
+// ── Page Footer ───────────────────────────────────────────────────────────────
+.page-footer {
+    display: flex;
+    gap: 1.5rem;
+
+    a {
+        font-size: 0.8rem;
+        color: $text-muted;
+        text-decoration: none;
+        transition: color 0.2s;
+
+        &:hover {
+            color: $text-primary;
+        }
+    }
+}
+
+@media (max-width: 900px) {
+    .home-page {
+        justify-content: flex-start;
+        padding: 1.5rem 1rem 2rem;
+        gap: 1.5rem;
+    }
+
+    .interview-card {
+        &__body {
+            flex-direction: column;
+            min-height: unset;
+        }
+
+        &__footer {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.75rem;
+
+            .footer-info {
+                text-align: center;
+            }
+        }
+    }
+
+    .panel-divider {
+        width: auto;
+        height: 1px;
+    }
+
+    .generate-btn {
+        justify-content: center;
+        width: 100%;
+    }
+}
+
+@media (max-width: 640px) {
+    .home-topbar {
+        justify-content: flex-end;
+    }
+
+    .logout-btn {
+        width: auto;
+    }
+
+    .page-header {
+        h1 {
+            font-size: 1.7rem;
+            line-height: 1.2;
+        }
+
+        p {
+            font-size: 0.9rem;
+        }
+    }
+
+    .interview-card {
+        border-radius: 0.75rem;
+
+        &__footer {
+            padding: 1rem;
+        }
+    }
+
+    .panel {
+        padding: 1rem;
+
+        &__header {
+            flex-wrap: wrap;
+        }
+
+        &--left {
+            .char-counter {
+                position: static;
+                align-self: flex-end;
+            }
+        }
+    }
+
+    .section-label {
+        flex-wrap: wrap;
+    }
+
+    .dropzone {
+        padding: 1.25rem 0.875rem;
+
+        &__title {
+            font-size: 0.82rem;
+        }
+    }
+
+    .loading-animation {
+        width: 220px;
+        height: 220px;
+    }
+
+    .page-footer {
+        text-align: center;
+    }
+}
