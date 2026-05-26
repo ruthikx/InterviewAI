@@ -466,25 +466,6 @@ Job Description:
 ${jobDescription}`
 }
 
-async function generatePdfFromHtml(htmlContent) {
-    const browser = await puppeteer.launch({
-        headless: "new",
-        executablePath: puppeteer.executablePath(),
-        args: [
-            "--no-sandbox",
-            "--disable-setuid-sandbox", 
-            "--disable-dev-shm-usage",
-            "--disable-gpu"
-        ]
-    })
-    const page = await browser.newPage()
-    await page.setContent(htmlContent, { waitUntil: "networkidle0", timeout: 10000 })
-    const pdfUint8Array = await page.pdf({ format: "A4" })
-    const pdfBuffer = Buffer.from(pdfUint8Array)
-    await browser.close()
-    return pdfBuffer
-}
-
 const path = require('path')
 
 async function generatePdfFromHtml(htmlContent) {
@@ -504,6 +485,39 @@ async function generatePdfFromHtml(htmlContent) {
     const pdfBuffer = Buffer.from(pdfUint8Array)
     await browser.close()
     return pdfBuffer
+}
+
+async function generateResumePdf({ resume, selfDescription, jobDescription }) {
+    const userPrompt = buildResumeUserPrompt({ resume, selfDescription, jobDescription })
+    let html
+
+    try {
+        console.log("[AI] Trying Groq for resume HTML...")
+        const rawText = await callGroq(resumeSystemPrompt, userPrompt)
+        const raw = JSON.parse(stripCodeFences(rawText))
+        html = typeof raw === "string" ? raw : (raw.resumeHtml || raw.html)
+        if (!html) throw new Error("no_html_in_response")
+        console.log("[AI] Groq succeeded")
+    } catch (err) {
+        console.warn(`[AI] Groq failed (${err.message}), falling back to Gemini...`)
+        const resumeHtmlSchema = z.object({
+            resumeHtml: z.string(),
+        })
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: userPrompt,
+            config: {
+                temperature: 0.2,
+                responseMimeType: "application/json",
+                responseSchema: zodToJsonSchema(resumeHtmlSchema),
+            },
+        })
+        const raw = JSON.parse(response.text)
+        html = typeof raw === "string" ? raw : (raw.resumeHtml || raw.html)
+        if (!html) throw new Error("Could not extract HTML from AI response")
+    }
+
+    return generatePdfFromHtml(html)
 }
 
 module.exports = { generateInterviewReport, generateResumePdf }
