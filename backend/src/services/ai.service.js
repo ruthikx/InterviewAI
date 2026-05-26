@@ -2,7 +2,6 @@ const { GoogleGenAI } = require("@google/genai")
 const Groq = require("groq-sdk")
 const { z } = require("zod")
 const { zodToJsonSchema } = require("zod-to-json-schema")
-const htmlPdfNode = require('html-pdf-node')
 
 const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_GENAI_API_KEY })
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
@@ -466,11 +465,17 @@ Job Description:
 ${jobDescription}`
 }
 
+const https = require('https')
+
 async function generatePdfFromHtml(htmlContent) {
-    const file = { content: htmlContent }
-    const options = { format: 'A4' }
-    const pdfBuffer = await htmlPdfNode.generatePdf(file, options)
-    return pdfBuffer
+    const encodedHtml = encodeURIComponent(htmlContent)
+    
+    const response = await fetch(`https://api.html2pdf.app/v1/generate?html=${encodedHtml}&apiKey=your_key`)
+    
+    if (!response.ok) throw new Error('PDF generation failed')
+    
+    const arrayBuffer = await response.arrayBuffer()
+    return Buffer.from(arrayBuffer)
 }
 
 async function generateResumePdf({ resume, selfDescription, jobDescription }) {
